@@ -7,7 +7,7 @@ Adafruit_SSD1306 oled(128, 64, &Wire, -1);
 #define left 5
 #define right 6
 
-short int pos[400] = { 600, 400, 200, 000 };
+short int pos[800] = { 600, 400, 200, 000 };
 short int foodx, foody, dir = 3, len = 4, dl = 100;
 bool eat = 1;
 uint32_t st1;
