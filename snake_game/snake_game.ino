@@ -30,7 +30,6 @@ void loop() {
 }
 
 void snake_game() {
-  bool menu = 1;
   //difficulty selection
   while (digitalRead(SW)) {
     oled.clearDisplay();
@@ -47,7 +46,6 @@ void snake_game() {
     ;  //after menu selection, wait for the button to be released before proceed
 
   while (1) {
-r:
     if (eat == 1) food();  //if the snake eats the food, redraw a new food in empty area
     draw();                //draw the snake
 
