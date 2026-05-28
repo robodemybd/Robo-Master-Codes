@@ -1,7 +1,4 @@
-#include <Wire.h>
-#include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-
 Adafruit_SSD1306 display(128, 64, &Wire);
 
 int upBtn = 2, downBtn = 3, setBtn = 4;
@@ -15,7 +12,7 @@ bool alarm = false;
 // Button press detection function
 byte press(byte pin) {
   if (digitalRead(pin) == 0) {
-    delay(50);
+    delay(50);  //debounce
     int timer = 0;
     bool long_press = 0;
     while (digitalRead(pin) == 0) {
@@ -23,8 +20,7 @@ byte press(byte pin) {
       timer += 50;
       if (timer > 1000 && long_press == 0) long_press = 1;
     }
-    if (long_press == 1) return 2;
-    else return 1;
+    return long_press + 1;
   }
   return 0;
 }
@@ -45,8 +41,12 @@ void setup() {
   pinMode(buzzer, OUTPUT);
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  display.display();
+  delay(1000);
+  display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(1);
+  time_show();
 }
 
 void loop() {
@@ -58,6 +58,7 @@ void loop() {
     timeSet = 0;
     running = false;
     alarm = false;
+    time_show();
   }
 
   // START / PAUSE (short press)

@@ -1,13 +1,12 @@
 #include <Adafruit_SSD1306.h>
-#include <Adafruit_GFX.h>
-Adafruit_SSD1306 oled(128, 64, &Wire, -1);
+Adafruit_SSD1306 display(128, 64, &Wire);
 #define SW 2
 #define up 3
 #define down 4
 #define left 5
 #define right 6
 
-short int pos[800] = { 600, 400, 200, 000 };
+short int pos[400] = { 600, 400, 200, 000 };
 short int foodx, foody, dir = 3, len = 4, dl = 100;
 bool eat = 1;
 uint32_t st1;
@@ -19,10 +18,13 @@ void setup() {
   pinMode(right, INPUT_PULLUP);
   pinMode(up, INPUT_PULLUP);
   pinMode(down, INPUT_PULLUP);
-  oled.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-  oled.clearDisplay();
-  oled.setTextColor(1);
-  oled.setTextSize(2);
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  display.display();
+  delay(1000);
+  display.clearDisplay();
+  display.setTextColor(1);
+  display.setTextSize(2);
+  display.display();
   snake_game();
 }
 
@@ -32,12 +34,12 @@ void loop() {
 void snake_game() {
   //difficulty selection
   while (digitalRead(SW)) {
-    oled.clearDisplay();
+    display.clearDisplay();
     text("GAME MODE?", 04, 0);
     text("   EASY   ", 04, 25);
     text("   HARD   ", 04, 50);
     (dl == 100) ? text(">>      <<", 04, 25) : text(">>      <<", 04, 50);
-    oled.display();
+    display.display();
     if (!digitalRead(up)) dl = 100;
     else if (!digitalRead(down)) dl = 50;
   }
@@ -69,20 +71,20 @@ void snake_game() {
 
 void draw() {
   //fill the each coordinate value by 3*3 cube
-  for (short i = 0; i < len; i++) oled.fillRect((pos[i] / 100) * 3, (pos[i] % 100) * 3, 3, 3, 1);
+  for (short i = 0; i < len; i++) display.fillRect((pos[i] / 100) * 3, (pos[i] % 100) * 3, 3, 3, 1);
 
   //this is to fill up the corner bits
   for (short i = 0; i < len - 1; i++) {
     int deltaX = (pos[i + 1] / 100) - (pos[i] / 100);
     int deltaY = (pos[i + 1] % 100) - (pos[i] % 100);
     if (abs(deltaX) <= 2 && abs(deltaY) <= 2)
-      oled.fillRect(((pos[i] / 100) + (deltaX / 2)) * 3, ((pos[i] % 100) + (deltaY / 2)) * 3, 3, 3, 1);
+      display.fillRect(((pos[i] / 100) + (deltaX / 2)) * 3, ((pos[i] % 100) + (deltaY / 2)) * 3, 3, 3, 1);
   }
 
   //draw food
-  oled.fillRect(foodx * 3, foody * 3, 3, 3, 1);
-  oled.display();
-  oled.clearDisplay();
+  display.fillRect(foodx * 3, foody * 3, 3, 3, 1);
+  display.display();
+  display.clearDisplay();
 }
 
 void motion() {
@@ -158,21 +160,21 @@ f:
 }
 
 void game_over(int a) {
-  oled.clearDisplay();
-  oled.setTextSize(2);
+  display.clearDisplay();
+  display.setTextSize(2);
   text("GAME OVER!", 04, 12);
   text("SCORE:" + String(a), 04, 48);
-  oled.display();
+  display.display();
   while (!digitalRead(SW))
     ;
 }
 
 void game_pause(int a) {
-  oled.clearDisplay();
-  oled.clearDisplay();
+  display.clearDisplay();
+  display.clearDisplay();
   text("GAME PAUSE", 04, 12);
   text("SCORE:" + String(a), 04, 48);
-  oled.display();
+  display.display();
   while (!digitalRead(SW))
     ;  //wait until the button is released
   while (digitalRead(SW))
@@ -182,6 +184,6 @@ void game_pause(int a) {
 }
 
 void text(String t, byte x, byte y) {
-  oled.setCursor(x, y);
-  oled.print(t);
+  display.setCursor(x, y);
+  display.print(t);
 }

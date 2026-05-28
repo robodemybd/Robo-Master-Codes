@@ -2,7 +2,7 @@
 Servo myServo;
 
 const int trigPin = 9;
-const int echoPin = 8;
+const int echoPin = 10;
 long duration;
 int distance;
 
